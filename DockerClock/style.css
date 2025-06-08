@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f5f5f5;
+}
+
+.clock-container {
+    text-align: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.display {
+    font-size: 48px;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.buttons button {
+    font-size: 20px;
+    margin: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    width: 60px;
+}
+
+.buttons button:hover {
+    background-color: #45a049;
+}
+
+.alarm-info {
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.alarm-alert {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #ff4444;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+    animation: blink 1s linear infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0.5; }
+}

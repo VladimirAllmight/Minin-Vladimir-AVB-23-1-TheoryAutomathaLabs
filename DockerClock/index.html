@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clock Alarm</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="clock-container">
+        <h1>Clock Alarm</h1>
+
+        <div class="display">
+            <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
+        </div>
+        
+        <div class="buttons">
+            <button id="btnH">H</button>
+            <button id="btnM">M</button>
+            <button id="btnA">A</button>
+        </div>
+        
+        <div class="alarm-info">
+            Alarm: <span id="alarmStatus">OFF</span><br>
+            Alarm Time: <span id="alarmTime">--:--</span>
+        </div>
+        
+        <div id="alarmAlert" class="alarm-alert" style="display: none;">
+            ALARM! ALARM! ALARM!
+        </div>
+    </div>
+
+    <script>
+        function updateDisplay(data) {
+            // Форматируем время с ведущими нулями
+            const hours = data.hours.toString().padStart(2, '0');
+            const minutes = data.minutes.toString().padStart(2, '0');
+            const seconds = data.seconds.toString().padStart(2, '0');
+            
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+            
+            // Обновляем информацию о будильнике
+            document.getElementById('alarmStatus').textContent = 
+                data.alarmOn ? 'ON' : 'OFF';
+                
+            if (data.alarmOn || data.settingAlarm) {
+                const alarmHours = data.alarmHours.toString().padStart(2, '0');
+                const alarmMinutes = data.alarmMinutes.toString().padStart(2, '0');
+                document.getElementById('alarmTime').textContent = 
+                    `${alarmHours}:${alarmMinutes}`;
+            } else {
+                document.getElementById('alarmTime').textContent = '--:--';
+            }
+            
+            // Подсвечиваем кнопки H и M, если в режиме установки будильника
+            document.getElementById('btnH').style.backgroundColor = 
+                data.settingAlarm ? '#45a049' : '#4CAF50';
+            document.getElementById('btnM').style.backgroundColor = 
+                data.settingAlarm ? '#45a049' : '#4CAF50';
+            
+            // Показываем/скрываем уведомление о будильнике
+            if (data.alarmTriggered) {
+                document.getElementById('alarmAlert').style.display = 'block';
+            } else {
+                document.getElementById('alarmAlert').style.display = 'none';
+            }
+        }
+    
+        // Запрашиваем состояние каждую секунду
+        function fetchState() {
+            fetch('/state')
+                .then(response => response.json())
+                .then(data => updateDisplay(data));
+        }
+        
+        // Обновляем состояние каждую секунду
+        setInterval(fetchState, 1000);
+        fetchState(); // Первоначальная загрузка
+        
+        // Обработчики кнопок
+        document.getElementById('btnH').addEventListener('click', () => {
+            fetch('/button', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ button: 'H' })
+            })
+            .then(response => response.json())
+            .then(data => updateDisplay(data));
+        });
+        
+        document.getElementById('btnM').addEventListener('click', () => {
+            fetch('/button', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ button: 'M' })
+            })
+            .then(response => response.json())
+            .then(data => updateDisplay(data));
+        });
+        
+        document.getElementById('btnA').addEventListener('click', () => {
+            fetch('/button', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ button: 'A' })
+            })
+            .then(response => response.json())
+            .then(data => updateDisplay(data));
+        });
+    </script>
+</body>
+</html>
